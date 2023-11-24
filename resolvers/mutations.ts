@@ -85,9 +85,9 @@ export const Mutation = {
                 throw new GraphQLError(`No pet found with id ${args.id}`, {
                     extensions: { code: "NOT_FOUND" },
                 });
-            */
             
             }
+            */
 
             return updatedPet;
         }
