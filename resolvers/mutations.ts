@@ -79,6 +79,15 @@ export const Mutation = {
                 { new: true } // Con new: true, devuelvo la persona actualizada
 
                 ).exec(); // Ejecuto la funcion
+
+            if(!updatedPet){
+                throw new GraphQLError(`No pet found with id ${args.id}`, {
+                    extensions: { code: "NOT_FOUND" },
+                });
+            
+            }
+
+            return updatedPet;
         }
         catch(error){
             console.error(error);
