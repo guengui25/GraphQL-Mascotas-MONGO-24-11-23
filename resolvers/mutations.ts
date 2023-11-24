@@ -80,10 +80,12 @@ export const Mutation = {
 
                 ).exec(); // Ejecuto la funcion
 
+            /*
             if(!updatedPet){
                 throw new GraphQLError(`No pet found with id ${args.id}`, {
                     extensions: { code: "NOT_FOUND" },
                 });
+            */
             
             }
 
