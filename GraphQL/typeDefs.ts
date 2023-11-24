@@ -15,8 +15,6 @@ export const typeDefs = `#graphql
   # Query -> son las funciones para las peticiones de datos
 
   type Query {
-    hello: String!
-
     # pets : [Pet!]!         # Pide todas las mascotas -> Devuelve un array [Pet] (Pet de graphql)
                               # Primera exclamación, siempre devuelve un Pet 
                               # Segunda exclamación siempre devuelve un array
@@ -35,7 +33,7 @@ export const typeDefs = `#graphql
   # Mutation -> son las funciones para las peticiones de modificación de datos
 
   type Mutation {
-    addPet(id: ID!, name: String!, breed: String!): Pet! # Añade una mascota -> Devuelve un Pet
+    addPet(name: String!, breed: String!): Pet! # Añade una mascota -> Devuelve un Pet
 
     deletePet(id: ID!): Pet! # Borra una mascota -> Devuelve un Pet 
 
