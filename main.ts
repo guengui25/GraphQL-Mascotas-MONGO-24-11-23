@@ -9,7 +9,7 @@ import { typeDefs } from "./GraphQL/typeDefs.ts";
 import { Mutation } from "./resolvers/mutations.ts";
 import { Query } from "./resolvers/query.ts";
 
-try{// Conexión a la base de datos
+try{  // Conexión a la base de datos
   
   const MONGO_URL = Deno.env.get("MONGO_URL");
   
