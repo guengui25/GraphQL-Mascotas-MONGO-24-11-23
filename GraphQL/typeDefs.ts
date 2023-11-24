@@ -15,19 +15,12 @@ export const typeDefs = `#graphql
   # Query -> son las funciones para las peticiones de datos
 
   type Query {
-    # pets : [Pet!]!         # Pide todas las mascotas -> Devuelve un array [Pet] (Pet de graphql)
-                              # Primera exclamación, siempre devuelve un Pet 
-                              # Segunda exclamación siempre devuelve un array
-
-    pets (breed:String) : [Pet!]!         # Agrego un argumento a la query pets -> Devuelve todas las mascotas de una raza determinada 
-                                            # si está el argumento, si no, devuelve todas las mascotas
+    pets (breed:String) : [Pet!]!   # Pide todas las mascotas -> Devuelve un array [Pet] (Pet de graphql)
+                                    # Agrego un argumento a la query pets -> Devuelve todas las mascotas de una raza determinada 
+                                      # si está el argumento, si no, devuelve todas las mascotas
 
     pet(id: ID!): Pet!    # Pide una mascota por id
                               # Recibe un id de tipo ID! y SIEMPRE va a devolver un ID -> Por la exclamación
-
-    # No tiene sentido, es mejor hacer una query que devuelva todas las mascotas y luego filtrar por raza
-
-    # petByBreed(breed:String!):[Pet!]!   # Devuelve todas las mascotas de una raza determinada
   }
   
   # Mutation -> son las funciones para las peticiones de modificación de datos

@@ -4,25 +4,8 @@ import { GraphQLError } from "graphql"; // Importo el tipo de error de graphql
 
 import PetModel from "../DB/pet.ts"; // Importo el modelo de la base de datos
 
-/*
-    Las Querys son las funciones que se ejecutan cuando se hace una petición de datos
-
-    Query es un objeto de typeScript -> Se define como un objeto de JS
-    Se definen las funciones que se ejecutan cuando se hace una petición de datos
-
-    Las querys tienen tres parámetros:
-        parent: unknown -> Ya veremos qué es
-        args: unknown -> Son los argumentos que recibe la query
-        context: unknown -> No se usa
-  */
 
 export const Query = {
-
-        /*
-    pets: (_parent: unknown, args: unknown):Pet[] => { // Devuelve todas las mascotas -> Devuelve un array [Pet] (Pet de graphql)
-        return pets; 
-    },
-    */
 
     pets: async (_parent: unknown, args: {breed?: string}): Promise<Pet[]> => { // Devuelve todas las mascotas -> Puede recibir una raza y devolver el array de mascotas solo de esa raza
         
@@ -63,5 +46,7 @@ export const Query = {
             extensions: { code: "NOT_FOUND" },
             });
         }
+
+        return pet_id;
     }
 }
