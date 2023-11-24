@@ -2,6 +2,8 @@ import { Pet } from "../types.ts"; // Importo el tipo de typescript
 
 import { GraphQLError } from "https://cdn.skypack.dev/graphql?dts"; // Importo los errores de graphql
 
+import PetModel from "../DB/pet.ts"; // Importo el modelo de la base de datos
+
 /*
     Las Querys son las funciones que se ejecutan cuando se hace una petición de datos
 
@@ -15,8 +17,6 @@ import { GraphQLError } from "https://cdn.skypack.dev/graphql?dts"; // Importo l
   */
 
 export const Query = {
-    
-    hello: () => "world",
 
         /*
     pets: (_parent: unknown, args: unknown):Pet[] => { // Devuelve todas las mascotas -> Devuelve un array [Pet] (Pet de graphql)
@@ -24,10 +24,15 @@ export const Query = {
     },
     */
 
-    pets: (_parent: unknown, args: {breed?: string}): Pet[] => { // Devuelve todas las mascotas -> Puede recibir una raza y devolver el array de mascotas solo de esa raza
+    pets: async (_parent: unknown, args: {breed?: string}): Promise<Pet[]> => { // Devuelve todas las mascotas -> Puede recibir una raza y devolver el array de mascotas solo de esa raza
         
         if(args.breed){
-        return pets.filter(pet => pet.breed === args.breed); // Si hay argumento, devuelve todas las mascotas de esa raza
+            const pets = await PetModel.find({breed: args.breed}).exec(); // Busco por raza en la base de datos
+            
+            return pets;
+        }
+        else{
+            const pets = await PetModel.find().exec(); // Busco todas las mascotas en la base de datos
         }
 
         return pets; // Devuelve todas las mascotas -> Devuelve un array [Pet] (Pet de graphql)

@@ -2,9 +2,11 @@ import { Pet } from "../types.ts"; // Importo el tipo de typescript
 
 import { GraphQLError } from "https://cdn.skypack.dev/graphql?dts"; // Importo los errores de graphql
 
+import PetModel from "../DB/pet.ts"; // Importo el modelo de la base de datos
+
 /*
     Las Mutations son las funciones que se ejecutan cuando se hace una petición de modificación de datos
-    
+
     Mutation es un objeto de typeScript -> Se define como un objeto de JS
     Se definen las funciones que se ejecutan cuando se hace una petición de modificación de datos
 
@@ -16,55 +18,73 @@ import { GraphQLError } from "https://cdn.skypack.dev/graphql?dts"; // Importo l
 
 export const Mutation = {
 
-        addPet: (_: unknown, args: { id: string; name: string; breed: string }) => {
-          
-          // Si hubiera base de datos se haría una consulta para ver si existe una mascota con ese id -> Salvo que el id se autogenere
-          if(pets.find(pet => pet.id === args.id)){
-            throw new GraphQLError(`Pet with id ${args.id} already exists`); // Si ya existe una mascota con ese id lanza un error
-          }
-    
-          // Se crea una mascota con los argumentos que recibe la mutation
-          const pet = {
-            id: args.id,
-            name: args.name,
-            breed: args.breed,
-          };
-    
-          pets.push(pet); // Se añade la mascota al array de mascotas -> Si hubiera base de datos se haría un insert
-    
-          return pet; // Se devuelve la mascota -> Si hubiera base de datos se devolvería el id de la mascota
-    
-    
-        },
-    
-        deletePet: (_: unknown, args: { id: string }) => {
-          const pet = pets.find((pet) => pet.id === args.id);
-          if (!pet) {
-            throw new GraphQLError(`No pet found with id ${args.id}`, {
-              extensions: { code: "NOT_FOUND" },
+    addPet: async (_: unknown, args: {name: string; breed: string }) => {
+        try{
+
+            if(!args.name || !args.breed){
+                throw new GraphQLError("Name and breed are required fields", {
+                    extensions: { code: "BAD_USER_INPUT" },
+                });
+            }
+
+            const newPet = new PetModel({ name: args.name, breed: args.breed});
+
+            await newPet.save();
+
+            return newPet;
+        }
+        catch(error){
+            console.error(error);
+            throw new GraphQLError(`Error saving pet with name ${args.name}`, {
+                extensions: { code: "INTERNAL_SERVER_ERROR" },
             });
-          }
-          pets = pets.filter((pet) => pet.id !== args.id); // Filtra el array de mascotas y devuelve todas las mascotas menos la que se quiere borrar
-          
-          return pet;
-        },
-    
-        updatePet: (
-          _: unknown,
-          args: { id: string; name: string; breed: string }
-        ) => {
-          const pet = pets.find((pet) => pet.id === args.id); // Busca la mascota por id
-    
-          if (!pet) {
-            throw new GraphQLError(`No pet found with id ${args.id}`, {
-              extensions: { code: "NOT_FOUND" },
+        }
+    },
+
+    deletePet: async (_: unknown, args: { id: string }) => {
+
+        try{
+            const pet = await PetModel.findByIdAndDelete(args.id).exec(); // Busco el dni de X en la base de datos
+
+            if(!pet){
+                throw new GraphQLError(`No pet found with id ${args.id}`, {
+                    extensions: { code: "NOT_FOUND" },
+                });
+            }
+
+            return pet;
+        }
+        catch(error){
+            console.error(error);
+            throw new GraphQLError(`Error deleting pet with id ${args.id}`, {
+                extensions: { code: "INTERNAL_SERVER_ERROR" },
             });
-          }
-          
-          // Actualiza la mascota
-          pet.name = args.name;
-          pet.breed = args.breed;
-    
-          return pet;
-        },
-      },
+        }
+    },
+
+    updatePet: async (_: unknown, args: { id: string; name: string; breed: string }) => {
+        
+        try{
+            if(!args.id || !args.name || !args.breed){
+                throw new GraphQLError("Name and breed are required fields", {
+                    extensions: { code: "BAD_USER_INPUT" },
+                });
+            }
+
+            const updatedPet = await PetModel.findByIdAndUpdate( // Actualizo la persona con el dni dado
+                args.id , // Busco la persona con el dni dado
+
+                { name: args.name, breed: args.breed }, // Actualizo los datos de la mascota
+
+                { new: true } // Con new: true, devuelvo la persona actualizada
+
+                ).exec(); // Ejecuto la funcion
+        }
+        catch(error){
+            console.error(error);
+            throw new GraphQLError(`Error updating pet with id ${args.id}`, {
+                extensions: { code: "INTERNAL_SERVER_ERROR" },
+            });
+        }
+    },
+};
