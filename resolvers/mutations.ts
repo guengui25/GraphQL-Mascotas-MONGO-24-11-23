@@ -1,6 +1,6 @@
 import { Pet } from "../types.ts"; // Importo el tipo de typescript
 
-import { GraphQLError } from "https://cdn.skypack.dev/graphql?dts"; // Importo los errores de graphql
+import { GraphQLError } from "graphql"; // Importo el tipo de error de graphql
 
 import PetModel from "../DB/pet.ts"; // Importo el modelo de la base de datos
 
